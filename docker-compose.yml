@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  backend:
+    user: root
+    build:
+      context: ./CodeX-backend
+      dockerfile: Dockerfile
+    ports:
+      - "6969:6969"
+    env_file:
+      - ./CodeX-backend/.env
+    volumes:
+      - ./CodeX-backend:/CodeX_Backend
+      - /CodeX_Backend/node_modules
+    depends_on:
+      - judge
+      - mongodb
+
+  judge:
+    build:
+      context: ./gcc_container/gcc_server
+      dockerfile: Dockerfile
+    ports:
+      - "3005:3005"
+    volumes:
+      - ./gcc_container/gcc_server:/judge
+      - /judge/node_modules
+  cache:
+    image: redis:4
+    volumes:
+    - .data/redis:/data
+  
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+volumes:
+  mongo-data:
+    
