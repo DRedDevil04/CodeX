@@ -38,7 +38,9 @@ services:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
+      - ./createUser.js:/docker-entrypoint-initdb.d/createUser.js:ro
     environment:
+      MONGO_INITDB_DATABASE: codex
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: password
 volumes:
